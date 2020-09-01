@@ -36,3 +36,11 @@
     define('SHOP_UPDATED', 901);
     define('SHOP_NOT_UPDATED', 902);
     define('SHOP_NOT_FOUND', 903);
+
+    define('SCHOOL_ADDED', 101);
+    define('SCHOOL_EXISTS', 102);
+    define('SCHOOL_FAILURE', 103);
+
+    define('SCHOOL_UPDATED', 201);
+    define('SCHOOL_NOT_UPDATED', 202);
+    define('SCHOOL_NOT_FOUND', 203);

@@ -318,4 +318,79 @@
             $stmt->store_result();
             return $stmt->num_rows > 0;
         }
+
+        // School Database Information
+
+        public function addSchool($school_id, $school_name, $school_address, $school_phone, $school_rating, $school_web, $school_image_url){
+            if(!$this->isSchoolExist($school_id)){
+                $stmt = $this->con->prepare("INSERT INTO education_info (school_id, school_name, school_address, school_phone, school_rating, school_web, school_image_url) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssdss", $school_id, $school_name, $school_address, $school_phone, $school_rating, $school_web, $school_image_url);
+                if($stmt->execute()){
+                    return SCHOOL_ADDED;
+                }else{
+                    return SCHOOL_EXISTS;
+                }
+            }
+            return SCHOOL_FAILURE;
+        }
+
+        public function updateSchool($school_id, $school_name, $school_address, $school_phone, $school_rating, $school_web, $school_image_url){
+            if($this->isSchoolExist($school_id)){
+                $stmt = $this->con->prepare("UPDATE education_info SET school_name = ?, school_address = ?, school_phone = ?, school_rating = ?, school_web = ?, school_image_url = ? WHERE school_id = ?");
+                $stmt->bind_param("sssdsss", $school_name, $school_address, $school_phone, $school_rating, $school_web, $school_image_url, $school_id);
+                if($stmt->execute()){
+                    return SCHOOL_UPDATED;
+                }else{
+                    return SCHOOL_NOT_UPDATED;
+                }
+            }
+            return SCHOOL_NOT_FOUND;
+        }
+
+        public function getAllSchool(){
+        	$stmt = $this->con->prepare("SELECT school_id, school_name, school_address, school_phone, school_rating, school_web, school_image_url FROM education_info");
+        	$stmt->execute();
+        	$stmt->bind_result($school_id, $school_name, $school_address, $school_phone, $school_rating, $school_web, $school_image_url);
+        	$schools = array();
+        	while($stmt->fetch()){
+        		$school = array();
+        	    $school['school_id'] = $school_id;
+        	    $school['school_name'] = $school_name;
+                $school['school_address'] = $school_address;
+                $school['school_phone'] = $school_phone;
+                $school['school_rating'] = $school_rating;
+                $school['school_web'] = $school_web;
+                $school['school_image_url'] = $school_image_url;
+        		array_push($schools, $school);
+       	 	}
+       	 	return $schools;
+        }
+
+        public function getSchoolByLocationId($school_id){
+            if($this->isSchoolExist($school_id)){
+                $stmt = $this->con->prepare("SELECT school_id, school_name, school_address, school_phone, school_rating, school_web, school_image_url FROM education_info WHERE school_id = ?");
+                $stmt->bind_param("s", $school_id); 
+                $stmt->execute();
+                $stmt->bind_result($school_id, $school_name, $school_address, $school_phone, $school_rating, $school_web, $school_image_url);
+        	    $stmt->fetch();
+        	    $school = array();
+        	    $school['school_id'] = $school_id;
+        	    $school['school_name'] = $school_name;
+                $school['school_address'] = $school_address;
+                $school['school_phone'] = $school_phone;
+                $school['school_rating'] = $school_rating;
+                $school['school_web'] = $school_web;
+                $school['school_image_url'] = $school_image_url;
+                
+        	    return $school;
+            }
+        }
+
+        private function isSchoolExist($school_id){
+            $stmt = $this->con->prepare("SELECT school_id FROM education_info WHERE school_id = ?");
+            $stmt->bind_param("s", $school_id);
+            $stmt->execute();
+            $stmt->store_result();
+            return $stmt->num_rows > 0;
+        }
     }
