@@ -25,6 +25,10 @@
     define('RESTAURENT_EXISTS', 602);
     define('RESTAURENT_FAILURE', 603);
 
+    define('CATEGORY_ADDED', 601);
+    define('CATEGORY_EXISTS', 602);
+    define('CATEGORY_FAILURE', 603);
+
     define('RESTAURENT_UPDATED', 701);
     define('RESTAURENT_NOT_UPDATED', 702);
     define('RESTAURENT_NOT_FOUND', 703); 

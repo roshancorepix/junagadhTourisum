@@ -174,6 +174,32 @@
             return RESTAURENT_FAILURE;
         }
 
+        public function addCategory($name){
+            if(!$this->isCategoryExist($name)){
+                $stmt = $this->con->prepare("INSERT INTO categories (name) VALUES (?)");
+                $stmt->bind_param("s", $name);
+                if($stmt->execute()){
+                    return CATEGORY_ADDED;
+                }else{
+                    return CATEGORY_FAILURE;
+                }
+            }
+            return CATEGORY_EXISTS;
+        }
+        
+        public function getCategories(){
+            $stmt = $this->con->prepare("SELECT * FROM categories");
+        	$stmt->execute();
+        	$stmt->bind_result($id, $name);
+            $Categories = array();
+            while($stmt->fetch()){
+                $category = array();
+        		$category['id'] = $id;
+        		$category['name'] = $name;
+        		array_push($Categories, $category);
+            }
+            return $Categories;
+        }
         public function updateRestaurent($r_id, $r_name, $r_address, $r_phone, $r_category, $r_web, $r_rating, $r_open, $r_close, $r_image){
             if($this->isRestaurentExist($r_id)){
                 $stmt = $this->con->prepare("UPDATE restaurants_info SET r_name = ?, r_address = ?, r_phone = ?, r_category = ?, r_web = ?, r_rating = ?, r_open = ?, r_close = ?, r_image = ? WHERE r_id = ?");
@@ -235,6 +261,14 @@
         private function isRestaurentExist($r_id){
             $stmt = $this->con->prepare("SELECT r_id FROM restaurants_info WHERE r_id = ?");
             $stmt->bind_param("s", $r_id);
+            $stmt->execute();
+            $stmt->store_result();
+            return $stmt->num_rows > 0;
+        }
+
+        private function isCategoryExist($name){
+            $stmt = $this->con->prepare("SELECT name FROM categories WHERE name = ?");
+            $stmt->bind_param("s", $name);
             $stmt->execute();
             $stmt->store_result();
             return $stmt->num_rows > 0;
